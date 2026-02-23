@@ -15,9 +15,9 @@ function HeroSlider() {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, [slides.length]);
 
-    const prevSlide = () => {
+    const prevSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-    };
+    }, [slides.length]);
 
     const goToSlide = (index) => {
         setCurrentSlide(index);
@@ -37,7 +37,7 @@ function HeroSlider() {
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [nextSlide]);
+    }, [nextSlide, prevSlide]);
 
     return (
         <section className="hero-slider">

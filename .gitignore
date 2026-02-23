@@ -137,3 +137,13 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Old static site files (backup)
+*.html.bak
+/css
+/js
+DEPLOYMENT_CHECKLIST.md
+SETUP_GUIDE.md
+
+# React production build
+/build

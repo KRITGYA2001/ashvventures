@@ -184,6 +184,7 @@ const BuildingAnimation = () => {
 
       group.userData = {
         targetScale: 1,
+        buildingH: h,
         delay: idx * 0.18 + Math.random() * 0.1,
         speed: 0.055 + Math.random() * 0.02,
       };
@@ -233,6 +234,18 @@ const BuildingAnimation = () => {
 
     scene.add(craneGroup);
 
+    // Construction spark lights — one per building, tracks building top as it rises
+    const constructionLights = buildings.map((group) => {
+      const h = group.userData.buildingH || 10;
+      const light = new THREE.PointLight(0xff7722, 0, 18);
+      light.position.set(group.position.x, 0, group.position.z);
+      scene.add(light);
+      return { light, group, h };
+    });
+
+    // Camera starts from a wide low angle, slowly rises to normal
+    camera.position.set(0, 5, 55);
+
     // Animation loop
     let time = 0;
     let animId;
@@ -242,13 +255,17 @@ const BuildingAnimation = () => {
       animId = requestAnimationFrame(animate);
       time += 0.016;
 
-      // Rise buildings via scale (pivot at bottom due to geo.translate)
+      // Gradually raise camera height at start
+      if (camera.position.y < 20) {
+        camera.position.y = Math.min(20, camera.position.y + 0.04);
+      }
+
+      // Rise buildings — discrete floor-by-floor feel (stepped easing)
       buildings.forEach((group) => {
         if (time > group.userData.delay && group.scale.y < group.userData.targetScale) {
-          group.scale.y = Math.min(
-            group.userData.targetScale,
-            group.scale.y + (group.userData.targetScale - group.scale.y) * group.userData.speed
-          );
+          // Stepped rise: jump to next 0.1 increment for a floor-stacking look
+          const raw = group.scale.y + (group.userData.targetScale - group.scale.y) * group.userData.speed;
+          group.scale.y = Math.min(group.userData.targetScale, raw);
         }
 
         // Blink antenna lights
@@ -259,13 +276,25 @@ const BuildingAnimation = () => {
         });
       });
 
+      // Move construction lights up with each building top + flicker while rising
+      constructionLights.forEach(({ light, group, h }) => {
+        const rising = group.scale.y < 0.99;
+        const topY = h * group.scale.y;
+        light.position.y = topY + 0.5;
+        if (rising && time > group.userData.delay) {
+          light.intensity = 3 + 2 * Math.abs(Math.sin(time * 12 + group.position.x));
+        } else {
+          light.intensity = Math.max(0, light.intensity - 0.05);
+        }
+      });
+
       // Slow camera orbit
       camAngle += 0.0018;
       camera.position.x = Math.sin(camAngle) * 42;
       camera.position.z = Math.cos(camAngle) * 42;
-      camera.lookAt(0, 6, 0);
+      camera.lookAt(0, 7, 0);
 
-      // Orbit colored lights
+      // Orbit accent lights
       orangeLight.position.set(Math.sin(time * 0.25) * 22, 10, Math.cos(time * 0.25) * 22);
       blueLight.position.set(-Math.sin(time * 0.25) * 22, 10, -Math.cos(time * 0.25) * 22);
 

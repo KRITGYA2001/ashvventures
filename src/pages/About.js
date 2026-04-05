@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import ConstructionScene from '../components/ConstructionScene';
 
 function About() {
     useEffect(() => {
@@ -51,7 +52,9 @@ function About() {
                             <p>Founded on <strong>19th December 2025</strong>, our firm represents the perfect blend of vision and execution, driven by our dedicated partners who bring years of experience and passion to every project.</p>
                         </div>
                         <div className="about-intro-image">
-                            <img src="/images/slides/slide1.png" alt="Ashv Ventures Projects" />
+                            <div className="about-3d-wrap">
+                                <ConstructionScene />
+                            </div>
                         </div>
                     </div>
                 </div>

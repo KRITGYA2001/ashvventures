@@ -11,20 +11,20 @@
 }
 
 :root {
-    /* Colors */
-    --primary-color: #2c2c2c;
+    /* Colors — Black / Orange / White theme */
+    --primary-color: #ff6b35;
     --secondary-color: #ff6b35;
     --accent-color: #f7931e;
-    --dark-color: #1e1e1e;
-    --light-color: #f5f5f5;
+    --dark-color: #000000;
+    --light-color: #111111;
     --white: #ffffff;
-    --gray: #666666;
-    --gray-light: #e0e0e0;
-    
+    --gray: #aaaaaa;
+    --gray-light: #222222;
+
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 100%);
+    --gradient-primary: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
     --gradient-secondary: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-    --gradient-dark: linear-gradient(135deg, #1e1e1e 0%, #3a3a3a 100%);
+    --gradient-dark: linear-gradient(135deg, #000000 0%, #111111 100%);
     
     /* Shadows */
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -51,7 +51,8 @@ html {
 
 body {
     font-family: var(--font-primary);
-    color: var(--dark-color);
+    color: var(--white);
+    background-color: #000000;
     line-height: 1.7;
     overflow-x: hidden;
 }
@@ -69,8 +70,10 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
-    background: var(--white);
-    box-shadow: var(--shadow-sm);
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 107, 53, 0.2);
+    box-shadow: 0 2px 20px rgba(255, 107, 53, 0.08);
     transition: var(--transition-normal);
 }
 
@@ -89,7 +92,7 @@ body {
     align-items: center;
     gap: 12px;
     text-decoration: none;
-    color: var(--dark-color);
+    color: var(--white);
     font-weight: 700;
     font-size: 1.5rem;
     transition: var(--transition-normal);
@@ -117,7 +120,7 @@ body {
 
 .nav-menu a {
     text-decoration: none;
-    color: var(--dark-color);
+    color: rgba(255, 255, 255, 0.85);
     font-weight: 500;
     font-size: 1rem;
     position: relative;
@@ -138,7 +141,7 @@ body {
 
 .nav-menu a:hover,
 .nav-menu a.active {
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 .nav-menu a:hover::after,
@@ -159,7 +162,7 @@ body {
 .nav-toggle span {
     width: 25px;
     height: 3px;
-    background: var(--dark-color);
+    background: var(--white);
     transition: var(--transition-normal);
     border-radius: 3px;
 }
@@ -353,7 +356,7 @@ section {
 .section-title {
     font-family: var(--font-heading);
     font-size: 2.5rem;
-    color: var(--dark-color);
+    color: var(--white);
     margin-bottom: 15px;
     position: relative;
     display: inline-block;
@@ -380,7 +383,7 @@ section {
 
 /* === SERVICES SECTION === */
 .services {
-    background: var(--light-color);
+    background: #0a0a0a;
 }
 
 .services-grid {
@@ -390,17 +393,19 @@ section {
 }
 
 .service-card {
-    background: var(--white);
+    background: #111111;
+    border: 1px solid rgba(255, 107, 53, 0.12);
     padding: 40px 30px;
     border-radius: 15px;
     text-align: center;
     transition: var(--transition-normal);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .service-card:hover {
     transform: translateY(-10px);
-    box-shadow: var(--shadow-lg);
+    border-color: rgba(255, 107, 53, 0.45);
+    box-shadow: 0 20px 50px rgba(255, 107, 53, 0.15);
 }
 
 .service-icon {
@@ -424,7 +429,7 @@ section {
 .service-card h3 {
     font-size: 1.5rem;
     margin-bottom: 15px;
-    color: var(--dark-color);
+    color: var(--white);
 }
 
 .service-card p {
@@ -444,7 +449,7 @@ section {
     font-family: var(--font-heading);
     font-size: 2.5rem;
     margin-bottom: 20px;
-    color: var(--dark-color);
+    color: var(--white);
 }
 
 .why-choose-text p {
@@ -473,7 +478,7 @@ section {
 .feature-item h4 {
     font-size: 1.2rem;
     margin-bottom: 5px;
-    color: var(--dark-color);
+    color: var(--white);
 }
 
 .feature-item p {
@@ -488,7 +493,8 @@ section {
 }
 
 .stat-card {
-    background: var(--gradient-primary);
+    background: #111111;
+    border: 1px solid rgba(255, 107, 53, 0.25);
     color: var(--white);
     padding: 35px 25px;
     border-radius: 15px;
@@ -505,6 +511,7 @@ section {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 10px;
+    color: var(--secondary-color);
 }
 
 .stat-card p {
@@ -514,7 +521,8 @@ section {
 
 /* === CTA SECTION === */
 .cta {
-    background: var(--gradient-primary);
+    background: #000000;
+    border-top: 1px solid rgba(255, 107, 53, 0.2);
     color: var(--white);
     text-align: center;
 }
@@ -643,7 +651,8 @@ section {
 
 /* === PAGE HEADER === */
 .page-header {
-    background: var(--gradient-primary);
+    background: #000000;
+    border-bottom: 1px solid rgba(255, 107, 53, 0.2);
     color: var(--white);
     text-align: center;
     padding: 120px 0 80px;
@@ -654,14 +663,116 @@ section {
     font-family: var(--font-heading);
     font-size: 3rem;
     margin-bottom: 15px;
+    color: var(--white);
 }
 
 .page-header p {
     font-size: 1.2rem;
-    opacity: 0.95;
+    opacity: 0.85;
+    color: var(--gray);
 }
 
 /* === ABOUT PAGE === */
+.about-intro-text h2,
+.contact-intro h2,
+.values-section h2,
+.office-info h2,
+.contact-info-section h3,
+.contact-form-section h3,
+.quick-contact h2,
+.map-section h2,
+.detail-card h3,
+.scope-item h3,
+.partner-info h3,
+.value-card h3,
+.office-address h3,
+.quick-card h3 {
+    color: var(--white) !important;
+}
+
+.about-intro-text p,
+.contact-intro p,
+.scope-intro,
+.scope-item p,
+.detail-card p,
+.partner-role,
+.value-card p,
+.office-address p,
+.office-contact p,
+.contact-details p,
+.contact-details a,
+.quick-card p,
+.form-notice p,
+.form-alternative p {
+    color: var(--gray) !important;
+}
+
+.business-details,
+.services-scope,
+.values-section,
+.quick-contact {
+    background: #080808 !important;
+}
+
+.partners-section,
+.registered-office,
+.map-section,
+.contact-page {
+    background: #0a0a0a !important;
+}
+
+section {
+    background-color: #000000;
+}
+
+.detail-card,
+.scope-item,
+.value-card,
+.partner-card,
+.office-address,
+.office-contact,
+.contact-item,
+.social-contact,
+.quick-card,
+.form-alternative {
+    background: #111111 !important;
+    border: 1px solid rgba(255, 107, 53, 0.1) !important;
+    color: var(--white) !important;
+}
+
+.contact-item:hover,
+.detail-card:hover,
+.quick-card:hover {
+    border-color: rgba(255, 107, 53, 0.35) !important;
+    box-shadow: 0 10px 40px rgba(255, 107, 53, 0.1) !important;
+}
+
+.form-notice {
+    background: rgba(255, 107, 53, 0.08) !important;
+    border-left-color: var(--secondary-color) !important;
+}
+
+.google-form-container {
+    border: 1px solid rgba(255, 107, 53, 0.15) !important;
+}
+
+.scope-item {
+    background: #0d0d0d !important;
+}
+
+.scope-item::before {
+    background: var(--gradient-secondary) !important;
+}
+
+.partner-card {
+    border-top: 4px solid var(--secondary-color) !important;
+}
+
+.value-card:hover {
+    background: var(--gradient-secondary) !important;
+    border-color: transparent !important;
+}
+
 .about-intro {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1458,7 +1569,7 @@ section {
    PROCESS SECTION
    =================================================== */
 .process-section {
-    background: var(--light-color);
+    background: #080808;
 }
 
 .process-grid {
@@ -1469,12 +1580,13 @@ section {
 }
 
 .process-step {
-    background: var(--white);
+    background: #111111;
+    border: 1px solid rgba(255, 107, 53, 0.1);
     border-radius: 16px;
     padding: 38px 28px 32px;
     text-align: center;
     position: relative;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     transition: var(--transition-normal);
     overflow: hidden;
 }
@@ -1492,7 +1604,8 @@ section {
 .process-step:hover::after { width: 100%; }
 .process-step:hover {
     transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
+    border-color: rgba(255, 107, 53, 0.4);
+    box-shadow: 0 20px 50px rgba(255, 107, 53, 0.12);
 }
 
 .process-step-num {
@@ -1528,7 +1641,7 @@ section {
 .process-step h4 {
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--dark-color);
+    color: var(--white);
     margin-bottom: 10px;
 }
 .process-step p {
@@ -1628,11 +1741,12 @@ section {
         left: -100%;
         top: 80px;
         flex-direction: column;
-        background: var(--white);
+        background: #000000;
+        border-top: 1px solid rgba(255, 107, 53, 0.2);
         width: 100%;
         text-align: center;
         transition: var(--transition-normal);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
         padding: 30px 0;
     }
 

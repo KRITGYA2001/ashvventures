@@ -18,23 +18,6 @@ function Header() {
         setMenuOpen(false);
     }, [location]);
 
-    // Header scroll effect
-    useEffect(() => {
-        const handleScroll = () => {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 100) {
-                header.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
-                header.style.padding = '10px 0';
-            } else {
-                header.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-                header.style.padding = '15px 0';
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
     const isActive = (path) => location.pathname === path ? 'active' : '';
 
     return (

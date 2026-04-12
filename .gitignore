@@ -147,3 +147,6 @@ SETUP_GUIDE.md
 
 # React production build
 /build
+
+# Claude Code local files
+.claude/

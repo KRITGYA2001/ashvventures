@@ -1,65 +1,86 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+const quickLinks = [
+    { to: '/', label: 'Home' },
+    { to: '/about', label: 'About' },
+    { to: '/contact', label: 'Contact' },
+];
+
+const serviceLinks = [
+    'Design strategy',
+    'Construction delivery',
+    'Material coordination',
+];
+
+const contactItems = [
+    { label: 'Email', value: 'contact@ashvventures.com', href: 'mailto:contact@ashvventures.com' },
+    { label: 'Phone', value: '+91 8700832180', href: 'tel:+918700832180' },
+    { label: 'Office', value: 'Basant Nagar, New Delhi', href: '/contact' },
+];
+
 function Footer() {
     return (
-        <footer className="footer">
+        <footer className="footer footer-v2">
             <div className="container">
-                <div className="footer-content">
-                    <div className="footer-section">
+                <div className="footer-top">
+                    <div className="footer-intro">
                         <div className="footer-logo">
                             <img src="/images/logo/Logo.PNG" alt="Ashv Ventures Logo" />
-                            <span>ASHV Ventures</span>
+                            <div className="footer-logo-copy">
+                                <strong>ASHV Ventures</strong>
+                                <span>Design, construction, and material supply</span>
+                            </div>
                         </div>
-                        <p>Leading the way in design, construction, and material supply since 2025.</p>
-                        <div className="social-links">
-                            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
-                            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i className="fab fa-twitter"></i></a>
-                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
-                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
+                        <p>
+                            A more connected project experience built around premium execution, clear communication,
+                            and disciplined delivery.
+                        </p>
+                        <Link to="/contact" className="btn footer-cta">Discuss your project</Link>
+                    </div>
+
+                    <div className="footer-columns">
+                        <div className="footer-section">
+                            <h3>Navigation</h3>
+                            <ul>
+                                {quickLinks.map((item) => (
+                                    <li key={item.to}>
+                                        <Link to={item.to}>{item.label}</Link>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                    </div>
-                    
-                    <div className="footer-section">
-                        <h3>Quick Links</h3>
-                        <ul>
-                            <li><Link to="/">Home</Link></li>
-                            <li><Link to="/about">About Us</Link></li>
-                            <li><Link to="/contact">Contact Us</Link></li>
-                        </ul>
-                    </div>
-                    
-                    <div className="footer-section">
-                        <h3>Our Services</h3>
-                        <ul>
-                            <li><a href="#services">Design</a></li>
-                            <li><a href="#services">Construction</a></li>
-                            <li><a href="#services">Material Supply</a></li>
-                        </ul>
-                    </div>
-                    
-                    <div className="footer-section">
-                        <h3>Contact Info</h3>
-                        <ul className="contact-info">
-                            <li>
-                                <i className="fas fa-map-marker-alt"></i>
-                                <span>H. No. 178-B, Ground Floor<br />Basant Nagar, New Delhi – 110057</span>
-                            </li>
-                            <li>
-                                <i className="fas fa-envelope"></i>
-                                <span>contact@ashvventures.com</span>
-                            </li>
-                            <li>
-                                <i className="fas fa-phone"></i>
-                                <span>+91 8700832180</span>
-                            </li>
-                        </ul>
+
+                        <div className="footer-section">
+                            <h3>Focus</h3>
+                            <ul>
+                                {serviceLinks.map((item) => (
+                                    <li key={item}>{item}</li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="footer-section">
+                            <h3>Contact</h3>
+                            <ul className="footer-contact-list">
+                                {contactItems.map((item) => (
+                                    <li key={item.label}>
+                                        <span>{item.label}</span>
+                                        {item.href.startsWith('/') ? (
+                                            <Link to={item.href}>{item.value}</Link>
+                                        ) : (
+                                            <a href={item.href}>{item.value}</a>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                
+
                 <div className="footer-bottom">
-                    <p>&copy; 2025 Ashv Ventures. All rights reserved.</p>
-                    <p>Designed with <i className="fas fa-heart"></i> for Excellence</p>
+                    <p>&copy; 2026 Ashv Ventures. All rights reserved.</p>
+                    <p>Built for premium project delivery in New Delhi.</p>
                 </div>
             </div>
         </footer>

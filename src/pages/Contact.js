@@ -1,5 +1,32 @@
 import React, { useEffect } from 'react';
 
+const contactChannels = [
+    {
+        label: 'Email',
+        value: 'contact@ashvventures.com',
+        href: 'mailto:contact@ashvventures.com',
+        note: 'Best for project briefs, site details, and early discussions.',
+    },
+    {
+        label: 'Call',
+        value: '+91 8700832180',
+        href: 'tel:+918700832180',
+        note: 'Best for direct coordination and immediate project conversations.',
+    },
+    {
+        label: 'WhatsApp',
+        value: 'Start a chat',
+        href: 'https://wa.me/918700832180',
+        note: 'Best for quick questions, image sharing, and follow-ups.',
+    },
+];
+
+const prepNotes = [
+    'Project type and location',
+    'Expected timeline or urgency',
+    'Any drawings, references, or material direction',
+];
+
 function Contact() {
     useEffect(() => {
         const items = document.querySelectorAll('[data-reveal]');
@@ -20,65 +47,81 @@ function Contact() {
     }, []);
 
     return (
-        <div className="contact-page contact-v2">
-            <section className="page-hero page-hero-v2">
-                <div className="container">
-                    <p className="section-eyebrow">Contact</p>
-                    <h1>Let’s discuss your project.</h1>
-                    <p className="page-hero-copy">
-                        Share your scope, location, and timeline. We will suggest the most practical next step.
-                    </p>
+        <div className="contact-page contact-v3">
+            <section className="inner-hero inner-hero-contact">
+                <div className="inner-hero-backdrop" aria-hidden="true" />
+                <div className="container inner-hero-layout">
+                    <div className="inner-hero-copy" data-reveal>
+                        <p className="section-eyebrow section-eyebrow-light">Contact</p>
+                        <h1>Let&apos;s discuss your project with clarity from the first step.</h1>
+                        <p className="inner-hero-summary">
+                            Share your scope, location, and timing. We will help identify the most practical next move.
+                        </p>
+                    </div>
+
+                    <div className="inner-hero-meta" data-reveal>
+                        <span>Direct access</span>
+                        <strong>Reach the team through email, call, or WhatsApp.</strong>
+                    </div>
                 </div>
             </section>
 
-            <section className="contact-v2-main reveal-on-scroll" data-reveal>
-                <div className="container contact-v2-grid">
-                    <article className="contact-v2-info premium-panel">
-                        <p className="section-eyebrow">Direct channels</p>
-                        <h2>Reach us directly.</h2>
-                        <div className="contact-v2-list">
-                            <div>
-                                <span>Office</span>
-                                <p>H. No. 178-B, Ground Floor, Basant Nagar, New Delhi – 110057</p>
-                            </div>
-                            <div>
-                                <span>Email</span>
-                                <p><a href="mailto:contact@ashvventures.com">contact@ashvventures.com</a></p>
-                            </div>
-                            <div>
-                                <span>Phone</span>
-                                <p><a href="tel:+918700832180">+91 8700832180</a></p>
-                            </div>
-                            <div>
-                                <span>Hours</span>
-                                <p>Monday - Saturday: 9:00 AM - 6:00 PM</p>
-                            </div>
+            <section className="contact-v3-main">
+                <div className="container contact-v3-grid">
+                    <article className="contact-v3-intro premium-panel" data-reveal>
+                        <p className="section-eyebrow">Start here</p>
+                        <h2>Bring the brief. We&apos;ll help shape the next step.</h2>
+                        <p>
+                            The most useful first message includes the project type, location, expected timeline, and any
+                            references or drawings already available.
+                        </p>
+                        <div className="contact-v3-prep">
+                            {prepNotes.map((note) => (
+                                <div className="contact-v3-prep-item" key={note}>
+                                    <span />
+                                    <p>{note}</p>
+                                </div>
+                            ))}
                         </div>
                     </article>
 
-                    <article className="contact-v2-actions premium-panel">
-                        <p className="section-eyebrow">Quick actions</p>
-                        <h2>Choose your preferred channel.</h2>
-                        <a className="contact-v2-action" href="mailto:contact@ashvventures.com">
-                            <span>Email</span>
-                            <strong>contact@ashvventures.com</strong>
-                        </a>
-                        <a className="contact-v2-action" href="tel:+918700832180">
-                            <span>Call</span>
-                            <strong>+91 8700832180</strong>
-                        </a>
-                        <a className="contact-v2-action" href="https://wa.me/918700832180" target="_blank" rel="noopener noreferrer">
-                            <span>WhatsApp</span>
-                            <strong>Start a chat</strong>
-                        </a>
-                        <p className="contact-v2-note">For faster help, include project type, location, and expected timeline.</p>
+                    <article className="contact-v3-actions" data-reveal>
+                        {contactChannels.map((channel) => (
+                            <a
+                                className="contact-v3-action"
+                                href={channel.href}
+                                key={channel.label}
+                                target={channel.href.startsWith('https') ? '_blank' : undefined}
+                                rel={channel.href.startsWith('https') ? 'noopener noreferrer' : undefined}
+                            >
+                                <span>{channel.label}</span>
+                                <strong>{channel.value}</strong>
+                                <p>{channel.note}</p>
+                            </a>
+                        ))}
                     </article>
                 </div>
             </section>
 
-            <section className="contact-v2-map reveal-on-scroll" data-reveal>
+            <section className="contact-v3-details">
+                <div className="container contact-v3-details-grid">
+                    <article className="contact-v3-card" data-reveal>
+                        <p className="section-eyebrow">Office</p>
+                        <h2>Basant Nagar, New Delhi.</h2>
+                        <p>H. No. 178-B, Ground Floor, Basant Nagar, New Delhi - 110057</p>
+                    </article>
+
+                    <article className="contact-v3-card" data-reveal>
+                        <p className="section-eyebrow">Hours</p>
+                        <h2>Monday to Saturday</h2>
+                        <p>9:00 AM - 6:00 PM</p>
+                    </article>
+                </div>
+            </section>
+
+            <section className="contact-v3-map">
                 <div className="container">
-                    <div className="contact-v2-map-wrap premium-panel">
+                    <div className="contact-v3-map-wrap premium-panel" data-reveal>
                         <iframe
                             src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3503.826!2d77.158168!3d28.571209!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m1!2zMjjCsDM0JzE2LjQiTiA3N8KwMDknMjkuNCJF!5e0!3m2!1sen!2sin!4v1709000000000!5m2!1sen!2sin"
                             width="100%"

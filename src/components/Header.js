@@ -1,55 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
+const navItems = [
+    { path: '/', label: 'Home' },
+    { path: '/about', label: 'About' },
+    { path: '/contact', label: 'Contact' },
+];
 
 function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
     const location = useLocation();
 
+    useEffect(() => {
+        setMenuOpen(false);
+    }, [location]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 24);
+        };
+
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     const toggleMenu = () => {
-        setMenuOpen(!menuOpen);
+        setMenuOpen((open) => !open);
     };
 
     const closeMenu = () => {
         setMenuOpen(false);
     };
 
-    // Close menu on route change
-    useEffect(() => {
-        setMenuOpen(false);
-    }, [location]);
-
-    const isActive = (path) => location.pathname === path ? 'active' : '';
+    const isActive = (path) => (location.pathname === path ? 'active' : '');
 
     return (
-        <header className="header">
+        <header className={`header ${isScrolled ? 'header-scrolled' : ''}`}>
             <nav className="navbar">
                 <div className="container">
-                    <div className="nav-wrapper">
+                    <div className={`nav-wrapper ${menuOpen ? 'nav-wrapper-open' : ''}`}>
                         <Link to="/" className="logo" onClick={closeMenu}>
                             <img src="/images/logo/Logo.PNG" alt="Ashv Ventures Logo" />
-                            <span>ASHV Ventures</span>
+                            <div className="logo-copy">
+                                <strong>ASHV Ventures</strong>
+                                <span>Design, build, supply</span>
+                            </div>
                         </Link>
-                        <button 
-                            className="nav-toggle" 
-                            id="navToggle" 
+
+                        <div className="nav-desktop">
+                            <ul className={`nav-menu ${menuOpen ? 'active' : ''}`} id="navMenu">
+                                {navItems.map((item) => (
+                                    <li key={item.path}>
+                                        <Link to={item.path} className={isActive(item.path)} onClick={closeMenu}>
+                                            {item.label}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                            <Link to="/contact" className="btn nav-cta">Start a project</Link>
+                        </div>
+
+                        <button
+                            className={`nav-toggle ${menuOpen ? 'nav-toggle-open' : ''}`}
+                            id="navToggle"
                             onClick={toggleMenu}
                             aria-label="Toggle navigation"
+                            aria-expanded={menuOpen}
                         >
-                            <span style={{
-                                transform: menuOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none'
-                            }}></span>
-                            <span style={{
-                                opacity: menuOpen ? '0' : '1'
-                            }}></span>
-                            <span style={{
-                                transform: menuOpen ? 'rotate(-45deg) translate(7px, -6px)' : 'none'
-                            }}></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
                         </button>
-                        <ul className={`nav-menu ${menuOpen ? 'active' : ''}`} id="navMenu">
-                            <li><Link to="/" className={isActive('/')} onClick={closeMenu}>Home</Link></li>
-                            <li><Link to="/about" className={isActive('/about')} onClick={closeMenu}>About Us</Link></li>
-                            <li><Link to="/contact" className={isActive('/contact')} onClick={closeMenu}>Contact Us</Link></li>
-                        </ul>
                     </div>
                 </div>
             </nav>

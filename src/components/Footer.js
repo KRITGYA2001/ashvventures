@@ -5,6 +5,7 @@ const quickLinks = [
     { to: '/', label: 'Home' },
     { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
+    { to: '/brochure', label: 'Brochure' },
 ];
 
 const serviceLinks = [

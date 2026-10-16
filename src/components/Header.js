@@ -5,6 +5,7 @@ const navItems = [
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
     { path: '/contact', label: 'Contact' },
+    { path: '/brochure', label: 'Brochure' },
 ];
 
 function Header() {

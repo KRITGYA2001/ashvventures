@@ -2,7 +2,13 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "ashvventures",
+      "name": "api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "api"],
+      "port": 4000
+    },
+    {
+      "name": "web",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
       "port": 3000

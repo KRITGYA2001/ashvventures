@@ -1,88 +1,76 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
-const quickLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/about', label: 'About' },
-    { to: '/contact', label: 'Contact' },
-    { to: '/brochure', label: 'Brochure' },
-];
-
-const serviceLinks = [
-    'Design strategy',
-    'Construction delivery',
-    'Material coordination',
-];
-
-const contactItems = [
-    { label: 'Email', value: 'contact@ashvventures.com', href: 'mailto:contact@ashvventures.com' },
-    { label: 'Phone', value: '+91 8700832180', href: 'tel:+918700832180' },
-    { label: 'Office', value: 'Basant Nagar, New Delhi', href: '/contact' },
-];
+import TLink from './TLink';
+import { Scramble } from '../motion/text';
+import { useSiteMotion } from '../motion/SiteMotion';
+import { company, disciplines, navItems } from '../content';
 
 function Footer() {
+    const { lenis } = useSiteMotion();
+
+    const toTop = () => {
+        if (lenis.current) lenis.current.scrollTo(0, { duration: 1.6 });
+        else window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
-        <footer className="footer footer-v2">
-            <div className="container">
-                <div className="footer-top">
-                    <div className="footer-intro">
-                        <div className="footer-logo">
-                            <img src="/images/logo/Logo.PNG" alt="Ashv Ventures Logo" />
-                            <div className="footer-logo-copy">
-                                <strong>ASHV Ventures</strong>
-                                <span>Design, construction, and material supply</span>
-                            </div>
-                        </div>
-                        <p>
-                            A more connected project experience built around premium execution, clear communication,
-                            and disciplined delivery.
-                        </p>
-                        <Link to="/contact" className="btn footer-cta">Discuss your project</Link>
-                    </div>
-
-                    <div className="footer-columns">
-                        <div className="footer-section">
-                            <h3>Navigation</h3>
-                            <ul>
-                                {quickLinks.map((item) => (
-                                    <li key={item.to}>
-                                        <Link to={item.to}>{item.label}</Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="footer-section">
-                            <h3>Focus</h3>
-                            <ul>
-                                {serviceLinks.map((item) => (
-                                    <li key={item}>{item}</li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="footer-section">
-                            <h3>Contact</h3>
-                            <ul className="footer-contact-list">
-                                {contactItems.map((item) => (
-                                    <li key={item.label}>
-                                        <span>{item.label}</span>
-                                        {item.href.startsWith('/') ? (
-                                            <Link to={item.href}>{item.value}</Link>
-                                        ) : (
-                                            <a href={item.href}>{item.value}</a>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
+        <footer className="site-footer" data-theme="dark">
+            <div className="footer-grid">
+                <div className="footer-col footer-lead">
+                    <Scramble as="p" className="eyebrow" text="[ Have a site in mind? ]" />
+                    <TLink to="/contact" label="Contact" className="footer-big-link">
+                        Let&apos;s talk <span aria-hidden="true">↗</span>
+                    </TLink>
                 </div>
 
-                <div className="footer-bottom">
-                    <p>&copy; 2026 Ashv Ventures. All rights reserved.</p>
-                    <p>Built for premium project delivery in New Delhi.</p>
+                <div className="footer-col">
+                    <p className="eyebrow">Index</p>
+                    <ul>
+                        {navItems.map((item) => (
+                            <li key={item.to}>
+                                <TLink to={item.to} label={item.label} className="u-link">
+                                    {item.label}
+                                </TLink>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
+
+                <div className="footer-col">
+                    <p className="eyebrow">Disciplines</p>
+                    <ul>
+                        {disciplines.map((d) => (
+                            <li key={d.id}>{d.title}</li>
+                        ))}
+                    </ul>
+                </div>
+
+                <div className="footer-col">
+                    <p className="eyebrow">Office</p>
+                    <ul>
+                        {company.address.map((line) => (
+                            <li key={line}>{line}</li>
+                        ))}
+                        <li>
+                            <a className="u-link" href={`mailto:${company.email}`}>{company.email}</a>
+                        </li>
+                        <li>
+                            <a className="u-link" href={company.phoneHref}>{company.phone}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div className="footer-mark" aria-hidden="true">
+                <span>ASHV</span>
+                <img src="/images/logo/logo-mark.png" alt="" />
+            </div>
+
+            <div className="footer-base mono">
+                <span>© {new Date().getFullYear()} {company.name}</span>
+                <span>{company.coords}</span>
+                <button type="button" className="u-link" onClick={toTop}>
+                    Back to top ↑
+                </button>
             </div>
         </footer>
     );

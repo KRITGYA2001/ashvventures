@@ -1,312 +1,290 @@
 import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import TLink from '../components/TLink';
+import TowerScene from '../components/TowerScene';
+import DragSlider from '../components/DragSlider';
+import Marquee from '../components/Marquee';
+import ProductCard from '../components/ProductCard';
+import useProducts from '../hooks/useProducts';
+import { gsap, ScrollTrigger } from '../motion/gsap';
+import { prefersReducedMotion, useSiteMotion } from '../motion/SiteMotion';
+import { Reveal, Scramble, ScrubText, usePageMotion } from '../motion/text';
+import { company, disciplines, manifesto, processSteps, values } from '../content';
 
-const storyMoments = [
-    {
-        id: 'design',
-        label: 'Design',
-        title: 'Concepts shaped around space, materials, and execution from the beginning.',
-        copy: 'We frame design decisions around how the project will actually be built, sourced, and experienced in real use.',
-        image: '/images/slides/ashv-hero.png',
-        alt: 'Premium exterior architecture with warm stone and modern lines',
-        tag: 'Spatial clarity',
-    },
-    {
-        id: 'build',
-        label: 'Construction',
-        title: 'Execution that stays disciplined from planning through on-site delivery.',
-        copy: 'Our work stays grounded in sequencing, quality checkpoints, and cleaner collaboration so progress remains visible.',
-        image: '/images/slides/ashv-construction.png',
-        alt: 'High-end construction process on a modern building project',
-        tag: 'Build confidence',
-    },
-    {
-        id: 'supply',
-        label: 'Material supply',
-        title: 'Finishes and materials curated to protect the design intent and the budget.',
-        copy: 'Material decisions are treated as part of the system, helping the final result feel coherent instead of pieced together.',
-        image: '/images/slides/ashv-materials.png',
-        alt: 'Curated premium materials and finishes for architectural projects',
-        tag: 'Curated sourcing',
-    },
-];
-
-const servicePillars = [
-    {
-        title: 'Integrated delivery',
-        copy: 'Design, construction, and material supply are aligned as one project system instead of disconnected vendors.',
-    },
-    {
-        title: 'Decision clarity',
-        copy: 'Clear next steps, practical communication, and tighter coordination help clients move forward with confidence.',
-    },
-    {
-        title: 'Premium execution',
-        copy: 'Details, finishes, and handover quality are treated as part of the process, not as a last-minute correction.',
-    },
-];
-
-const processSteps = [
-    {
-        number: '01',
-        title: 'Brief and site reading',
-        copy: 'We align on project goals, context, and the most important constraints before momentum starts.',
-    },
-    {
-        number: '02',
-        title: 'Design and technical planning',
-        copy: 'Spatial direction, specifications, and delivery logic are shaped together so decisions stay practical.',
-    },
-    {
-        number: '03',
-        title: 'Build, source, and close out',
-        copy: 'Execution, procurement, and finishing are managed against the same quality standard through completion.',
-    },
-];
-
-const galleryFrames = [
-    {
-        title: 'Architectural presence',
-        copy: 'Compositions designed to feel measured, sharp, and long-lasting.',
-        image: '/images/slides/ashv-hero.png',
-        alt: 'Premium modern architecture with a cinematic editorial feel',
-    },
-    {
-        title: 'Construction discipline',
-        copy: 'Progress with coordination, sequencing, and cleaner on-site control.',
-        image: '/images/slides/ashv-construction.png',
-        alt: 'Disciplined construction process on a premium project',
-    },
-    {
-        title: 'Finished atmosphere',
-        copy: 'Spaces that carry the design intent all the way to the final experience.',
-        image: '/images/slides/ashv-interior.png',
-        alt: 'Completed interior with premium finishes',
-    },
-];
-
-function Home() {
-    const heroRef = useRef(null);
+function Hero() {
+    const { loaded } = useSiteMotion();
+    const section = useRef(null);
+    const stage = useRef(null);
+    const progress = useRef(0);
 
     useEffect(() => {
-        const items = document.querySelectorAll('[data-reveal]');
-        const parallaxItems = document.querySelectorAll('[data-parallax]');
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
+        const trigger = ScrollTrigger.create({
+            trigger: section.current,
+            start: 'top top',
+            end: 'bottom bottom',
+            onUpdate: (self) => {
+                progress.current = self.progress;
+                stage.current?.style.setProperty('--p', self.progress.toFixed(4));
             },
-            { threshold: 0.18, rootMargin: '0px 0px -10% 0px' }
-        );
-
-        items.forEach((item) => observer.observe(item));
-
-        let ticking = false;
-
-        const updateMotion = () => {
-            const hero = heroRef.current;
-
-            if (hero) {
-                const heroHeight = hero.offsetHeight || 1;
-                const progress = Math.max(0, Math.min(window.scrollY / heroHeight, 1));
-                hero.style.setProperty('--hero-progress', progress.toFixed(3));
-            }
-
-            parallaxItems.forEach((item) => {
-                const rect = item.getBoundingClientRect();
-                const speed = Number(item.getAttribute('data-parallax-speed') || 0.12);
-                const centeredOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
-                const translate = centeredOffset * -speed;
-                item.style.setProperty('--parallax-y', `${translate.toFixed(1)}px`);
-            });
-
-            ticking = false;
-        };
-
-        const handleScroll = () => {
-            if (!ticking) {
-                window.requestAnimationFrame(updateMotion);
-                ticking = true;
-            }
-        };
-
-        updateMotion();
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        window.addEventListener('resize', handleScroll);
-
-        return () => {
-            observer.disconnect();
-            window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('resize', handleScroll);
-        };
+        });
+        return () => trigger.kill();
     }, []);
 
     return (
-        <div className="home-page home-v3">
-            <section className="hero-v3" ref={heroRef}>
-                <div className="hero-v3-backdrop" aria-hidden="true" />
-                <div className="hero-v3-orbit hero-v3-orbit-one" aria-hidden="true" />
-                <div className="hero-v3-orbit hero-v3-orbit-two" aria-hidden="true" />
+        <section className="hero" ref={section}>
+            <div className="hero-stage" ref={stage}>
+                <TowerScene progress={progress} start={loaded} />
 
-                <div className="hero-v3-media" aria-hidden="true">
-                    <figure className="hero-v3-photo hero-v3-photo-main" data-parallax data-parallax-speed="0.09">
-                        <img src="/images/slides/ashv-hero.png" alt="" loading="eager" />
-                    </figure>
-                    <figure className="hero-v3-photo hero-v3-photo-accent" data-parallax data-parallax-speed="0.14">
-                        <img src="/images/slides/ashv-materials.png" alt="" loading="eager" />
-                    </figure>
+                <div className="hero-top mono">
+                    <Scramble text="[ Fig. 01 — Tower study ]" />
+                    <Scramble text={company.coords} delay={0.2} />
                 </div>
 
-                <div className="container hero-v3-layout">
-                    <div className="hero-v3-copy" data-reveal>
-                        <p className="section-eyebrow section-eyebrow-light">Ashv Ventures</p>
-                        <p className="hero-v3-kicker">Design, construction, and material supply in one delivery flow</p>
-                        <h1>
-                            Motion-led project storytelling for a business built on execution.
-                        </h1>
-                        <p className="hero-v3-summary">
-                            Ashv Ventures brings design thinking, construction discipline, and material coordination
-                            into one premium project experience for homeowners, commercial clients, and design partners.
-                        </p>
-                        <div className="hero-v3-actions">
-                            <Link to="/contact" className="btn btn-primary">Start a project</Link>
-                            <Link to="/about" className="btn btn-secondary">See our approach</Link>
+                <div className="hero-title-wrap">
+                    {loaded && <Reveal as="h1" className="hero-title" text={'We design,\nbuild &\nsupply.'} immediate delay={0.2} stagger={0.08} />}
+                </div>
+
+                <div className="hero-side">
+                    <p className="hero-lead fade-after-load">
+                        An architecture studio in New Delhi bringing design, construction and material supply into one
+                        accountable delivery flow.
+                    </p>
+                    <div className="hero-actions fade-after-load">
+                        <TLink to="/contact" label="Contact" className="pill pill-solid">
+                            Start a project
+                        </TLink>
+                        <TLink to="/about" label="Studio" className="pill">
+                            The studio
+                        </TLink>
+                    </div>
+                </div>
+
+                <ol className="hero-callouts mono" aria-label="Disciplines">
+                    {disciplines.map((d, i) => (
+                        <li key={d.id} style={{ '--i': i }}>
+                            <span>{d.number}</span>
+                            {d.title}
+                        </li>
+                    ))}
+                </ol>
+
+                <div className="hero-scroll mono" aria-hidden="true">
+                    <span>Scroll</span>
+                    <i />
+                </div>
+            </div>
+        </section>
+    );
+}
+
+function Disciplines() {
+    const root = useRef(null);
+
+    useEffect(() => {
+        if (prefersReducedMotion()) return undefined;
+        const ctx = gsap.context(() => {
+            const cards = gsap.utils.toArray('.disc-card');
+            cards.forEach((card, i) => {
+                const next = cards[i + 1];
+                if (!next) return;
+                gsap.to(card.querySelector('.disc-inner'), {
+                    scale: 0.9,
+                    // Dim rather than fade, so the card stays opaque over the ones stacked beneath it.
+                    filter: 'brightness(0.4)',
+                    ease: 'none',
+                    scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 12%', scrub: true },
+                });
+            });
+        }, root);
+        return () => ctx.revert();
+    }, []);
+
+    return (
+        <section className="disc" data-theme="dark" ref={root}>
+            <div className="section-head">
+                <Scramble as="p" className="eyebrow" text="[ 02 — Disciplines ]" />
+                <Reveal text={'Three disciplines.\nOne project system.'} className="h-xl" />
+            </div>
+            <div className="disc-stack">
+                {disciplines.map((d, i) => (
+                    <article className="disc-card" key={d.id} style={{ '--i': i }}>
+                        <div className="disc-inner">
+                            <div className="disc-copy">
+                                <span className="disc-num mono">{d.number} / 03</span>
+                                <h3 className="disc-title">{d.title}</h3>
+                                <p className="disc-lead mono">{d.lead}</p>
+                                <p className="disc-text">{d.copy}</p>
+                                <ul className="disc-points">
+                                    {d.points.map((point) => (
+                                        <li key={point}>{point}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <figure className="disc-media" data-clip>
+                                <img src={d.image} alt={d.alt} loading="lazy" data-speed="0.18" />
+                            </figure>
                         </div>
-                    </div>
+                    </article>
+                ))}
+            </div>
+        </section>
+    );
+}
 
-                    <div className="hero-v3-aside" data-reveal>
-                        <div className="hero-v3-note">
-                            <span>New Delhi</span>
-                            <strong>Built with editorial presence and real delivery confidence.</strong>
-                            <p>Designed to feel premium now and even stronger as better future visuals are added.</p>
+function Process() {
+    const root = useRef(null);
+    const track = useRef(null);
+
+    useEffect(() => {
+        const mm = gsap.matchMedia();
+        mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', () => {
+            const distance = () => track.current.scrollWidth - window.innerWidth;
+            gsap.to(track.current, {
+                x: () => -distance(),
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: root.current,
+                    start: 'top top',
+                    end: () => `+=${distance()}`,
+                    pin: true,
+                    scrub: 0.6,
+                    invalidateOnRefresh: true,
+                    onUpdate: (self) => root.current?.style.setProperty('--pp', self.progress.toFixed(4)),
+                },
+            });
+        });
+        return () => mm.revert();
+    }, []);
+
+    return (
+        <section className="process" ref={root}>
+            <div className="process-track" ref={track}>
+                <div className="process-intro">
+                    <Scramble as="p" className="eyebrow" text="[ 03 — Process ]" />
+                    <Reveal text={'From brief\nto handover.'} className="h-xl" />
+                    <p className="body-l">
+                        Each phase stays connected, so decisions made early still hold up on site and at handover.
+                    </p>
+                </div>
+                {processSteps.map((step) => (
+                    <article className="process-step" key={step.number}>
+                        <span className="process-num" aria-hidden="true">
+                            {step.number}
+                        </span>
+                        <div>
+                            <h3 className="h-m">{step.title}</h3>
+                            <p>{step.copy}</p>
                         </div>
-                    </div>
-                </div>
+                    </article>
+                ))}
+            </div>
+            <div className="process-progress" aria-hidden="true">
+                <span />
+            </div>
+        </section>
+    );
+}
 
-                <div className="hero-v3-footer" data-reveal>
-                    <div>
-                        <span>Integrated model</span>
-                        <strong>Design + build + supply</strong>
-                    </div>
-                    <div>
-                        <span>Primary focus</span>
-                        <strong>Execution and trust</strong>
-                    </div>
-                    <div>
-                        <span>Audience</span>
-                        <strong>Homeowners, commercial, partners</strong>
-                    </div>
+function MaterialLibrary() {
+    const { products, status, reload } = useProducts();
+
+    return (
+        <section className="library" data-theme="dark">
+            <div className="section-head section-head-row">
+                <div>
+                    <Scramble as="p" className="eyebrow" text="[ 04 — Material library ]" />
+                    <Reveal text={'Materials we\nsupply & specify.'} className="h-xl" />
                 </div>
+                <div className="library-aside">
+                    <p className="mono">
+                        <span className="live-dot" /> Live from our catalogue
+                    </p>
+                    <TLink to="/materials" label="Materials" className="pill pill-light">
+                        All materials
+                    </TLink>
+                </div>
+            </div>
+
+            {status === 'ready' && products.length > 0 && (
+                <DragSlider
+                    items={products}
+                    getKey={(p) => p.id || p.name}
+                    label="Material library"
+                    renderItem={(product, i) => <ProductCard product={product} index={i} />}
+                />
+            )}
+            {status === 'loading' && (
+                <div className="library-skeleton" aria-label="Loading materials">
+                    {[0, 1, 2, 3].map((n) => (
+                        <span key={n} />
+                    ))}
+                </div>
+            )}
+            {(status === 'error' || (status === 'ready' && products.length === 0)) && (
+                <div className="library-empty">
+                    <p>The catalogue is offline right now.</p>
+                    <button type="button" className="pill pill-light" onClick={reload}>
+                        Try again
+                    </button>
+                </div>
+            )}
+        </section>
+    );
+}
+
+function Principles() {
+    return (
+        <section className="principles">
+            <div className="section-head section-head-row">
+                <div>
+                    <Scramble as="p" className="eyebrow" text="[ 05 — Principles ]" />
+                    <Reveal text={'The standard we\nreturn to.'} className="h-xl" />
+                </div>
+            </div>
+            <ol className="principle-list">
+                {values.map((value, i) => (
+                    <li className="principle" key={value.title} data-fade tabIndex={0}>
+                        <span className="mono">0{i + 1}</span>
+                        <h3>{value.title}</h3>
+                        <p>{value.copy}</p>
+                    </li>
+                ))}
+            </ol>
+        </section>
+    );
+}
+
+export function ClayCta() {
+    return (
+        <section className="clay-cta">
+            <Marquee items={['Start a project', 'Design', 'Build', 'Supply', 'Start a project', 'Design', 'Build', 'Supply']} />
+            <div className="clay-cta-row">
+                <p className="body-l">Share the scope, location and timing. We will help define the next practical step.</p>
+                <TLink to="/contact" label="Contact" className="big-round" data-cursor="Let's talk">
+                    <span>Let&apos;s talk</span>
+                </TLink>
+            </div>
+        </section>
+    );
+}
+
+function Home() {
+    usePageMotion();
+
+    return (
+        <div className="page page-home">
+            <Hero />
+            <section className="manifesto">
+                <div className="manifesto-head">
+                    <Scramble as="p" className="eyebrow" text="[ 01 — Practice ]" />
+                    <p className="mono manifesto-tag">3 disciplines · 1 team · 1 standard</p>
+                </div>
+                <ScrubText className="manifesto-text" text={manifesto} />
             </section>
-
-            <section className="story-v3">
-                <div className="container">
-                    <div className="section-header section-header-left story-v3-header" data-reveal>
-                        <p className="section-eyebrow">Scroll story</p>
-                        <h2 className="section-title section-title-left">A cleaner way to move from concept to completion.</h2>
-                        <p className="section-subtitle story-v3-subtitle">
-                            Each phase should feel connected. The homepage now tells that story through visual rhythm,
-                            measured copy, and motion that reinforces process instead of distracting from it.
-                        </p>
-                    </div>
-
-                    <div className="story-v3-stack">
-                        {storyMoments.map((moment) => (
-                            <article className="story-v3-panel" key={moment.id}>
-                                <div className="story-v3-sticky">
-                                    <div className="story-v3-content premium-panel" data-reveal>
-                                        <span className="story-v3-tag">{moment.label}</span>
-                                        <h3>{moment.title}</h3>
-                                        <p>{moment.copy}</p>
-                                        <small>{moment.tag}</small>
-                                    </div>
-                                    <figure className="story-v3-visual" data-reveal>
-                                        <div className="story-v3-visual-inner" data-parallax data-parallax-speed="0.12">
-                                            <img src={moment.image} alt={moment.alt} loading="lazy" />
-                                        </div>
-                                    </figure>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section className="proof-v3">
-                <div className="container proof-v3-layout">
-                    <div className="proof-v3-intro" data-reveal>
-                        <p className="section-eyebrow">Why it works</p>
-                        <h2 className="section-title section-title-left">Structured enough for trust. Elevated enough to feel memorable.</h2>
-                        <p className="section-subtitle">
-                            The site now balances architectural atmosphere with business clarity, so the first impression is
-                            premium while the message still says the team can deliver.
-                        </p>
-                    </div>
-
-                    <div className="proof-v3-grid">
-                        {servicePillars.map((pillar) => (
-                            <article className="proof-v3-item" key={pillar.title} data-reveal>
-                                <h3>{pillar.title}</h3>
-                                <p>{pillar.copy}</p>
-                            </article>
-                        ))}
-                    </div>
-
-                    <div className="process-v3" id="services">
-                        {processSteps.map((step) => (
-                            <article className="process-v3-step" key={step.number} data-reveal>
-                                <span>{step.number}</span>
-                                <div>
-                                    <h3>{step.title}</h3>
-                                    <p>{step.copy}</p>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section className="gallery-v3">
-                <div className="container">
-                    <div className="section-header section-header-left" data-reveal>
-                        <p className="section-eyebrow">Featured frames</p>
-                        <h2 className="section-title section-title-left">Large visuals, restrained captions, and room for stronger future imagery.</h2>
-                    </div>
-
-                    <div className="gallery-v3-list">
-                        {galleryFrames.map((frame, index) => (
-                            <article className={`gallery-v3-frame ${index % 2 === 1 ? 'gallery-v3-frame-reverse' : ''}`} key={frame.title}>
-                                <figure className="gallery-v3-image" data-reveal>
-                                    <div className="gallery-v3-image-inner" data-parallax data-parallax-speed="0.1">
-                                        <img src={frame.image} alt={frame.alt} loading="lazy" />
-                                    </div>
-                                </figure>
-                                <div className="gallery-v3-copy" data-reveal>
-                                    <span>{String(index + 1).padStart(2, '0')}</span>
-                                    <h3>{frame.title}</h3>
-                                    <p>{frame.copy}</p>
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            <section className="cta cta-v3 reveal-on-scroll" data-reveal>
-                <div className="container">
-                    <div className="cta-content">
-                        <p className="section-eyebrow section-eyebrow-light">Final call</p>
-                        <h2>Bring design, build, and material decisions into one sharper project experience.</h2>
-                        <p>Share the project scope and we will help define the next practical step.</p>
-                        <Link to="/contact" className="btn btn-primary">Talk to Ashv Ventures</Link>
-                    </div>
-                </div>
-            </section>
+            <Disciplines />
+            <Process />
+            <MaterialLibrary />
+            <Principles />
+            <ClayCta />
         </div>
     );
 }

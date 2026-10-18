@@ -64,9 +64,13 @@ export function Scramble({ text, as: Tag = 'span', className = '', hover = false
         if (hover) scrambleTo(ref.current, text, { duration: 0.5 });
     }, [hover, text]);
 
+    // Screen readers get the settled text; the scrambling copy is hidden from them.
     return (
-        <Tag ref={ref} className={className} onMouseEnter={onEnter} aria-label={text} {...rest}>
-            {text}
+        <Tag className={className} onMouseEnter={onEnter} {...rest}>
+            <span ref={ref} aria-hidden="true">
+                {text}
+            </span>
+            <span className="sr-only">{text}</span>
         </Tag>
     );
 }
@@ -99,7 +103,7 @@ export function Reveal({ text, as: Tag = 'h2', className = '', delay = 0, stagge
     }, [text, delay, stagger, immediate, start]);
 
     return (
-        <Tag ref={ref} className={`rv ${className}`} aria-label={text.replace(/\n/g, ' ')}>
+        <Tag ref={ref} className={`rv ${className}`}>
             {lines.map((line, li) => (
                 <span className="rv-line" key={li} aria-hidden="true">
                     {line.split(' ').map((word, wi) => (
@@ -109,6 +113,8 @@ export function Reveal({ text, as: Tag = 'h2', className = '', delay = 0, stagge
                     ))}
                 </span>
             ))}
+            {/* Last, so it doesn't shift the nth-child line styles. */}
+            <span className="sr-only">{text.replace(/\n/g, ' ')}</span>
         </Tag>
     );
 }
@@ -167,7 +173,7 @@ export function ScrubText({ text, className = '' }) {
         if (!el || prefersReducedMotion()) return undefined;
         const ctx = gsap.context(() => {
             gsap.fromTo(
-                el.querySelectorAll('span'),
+                el.querySelectorAll('.st-w'),
                 { opacity: 0.14 },
                 {
                     opacity: 1,
@@ -181,12 +187,15 @@ export function ScrubText({ text, className = '' }) {
     }, [text]);
 
     return (
-        <p ref={ref} className={className} aria-label={text}>
-            {text.split(' ').map((word, i) => (
-                <React.Fragment key={i}>
-                    <span aria-hidden="true">{word}</span>{' '}
-                </React.Fragment>
-            ))}
+        <p ref={ref} className={className}>
+            <span aria-hidden="true">
+                {text.split(' ').map((word, i) => (
+                    <React.Fragment key={i}>
+                        <span className="st-w">{word}</span>{' '}
+                    </React.Fragment>
+                ))}
+            </span>
+            <span className="sr-only">{text}</span>
         </p>
     );
 }

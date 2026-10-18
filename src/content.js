@@ -31,7 +31,7 @@ export const disciplines = [
         lead: 'Design strategy',
         copy: 'Concepts shaped around space, materials, and execution from the beginning, so design decisions hold up on site.',
         points: ['Spatial planning', 'Concept & detailing', 'Technical drawings'],
-        image: '/images/slides/ashv-hero.png',
+        image: '/images/slides/ashv-hero.webp',
         alt: 'Modern exterior architecture with warm stone and clean lines',
     },
     {
@@ -41,7 +41,7 @@ export const disciplines = [
         lead: 'Construction delivery',
         copy: 'Execution that stays disciplined from planning through on-site delivery, with clear sequencing and quality checkpoints.',
         points: ['Sequencing & site control', 'Quality checkpoints', 'Transparent progress'],
-        image: '/images/slides/ashv-construction.png',
+        image: '/images/slides/ashv-construction.webp',
         alt: 'Construction of a modern building project',
     },
     {
@@ -51,7 +51,7 @@ export const disciplines = [
         lead: 'Material coordination',
         copy: 'Finishes and materials curated to protect the design intent and the budget, sourced as part of one project system.',
         points: ['Curated finishes', 'Brand partnerships', 'Budget protection'],
-        image: '/images/slides/ashv-materials.png',
+        image: '/images/slides/ashv-materials.webp',
         alt: 'Curated premium materials and finishes',
     },
 ];

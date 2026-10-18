@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useEffect, useRef } from 'react';
 import TLink from '../components/TLink';
-import TowerScene from '../components/TowerScene';
 import DragSlider from '../components/DragSlider';
 import Marquee from '../components/Marquee';
 import ProductCard from '../components/ProductCard';
@@ -9,6 +8,9 @@ import { gsap, ScrollTrigger } from '../motion/gsap';
 import { prefersReducedMotion, useSiteMotion } from '../motion/SiteMotion';
 import { Reveal, Scramble, ScrubText, usePageMotion } from '../motion/text';
 import { company, disciplines, manifesto, processSteps, values } from '../content';
+
+// three.js is the heaviest dependency, so the tower loads in its own chunk.
+const TowerScene = lazy(() => import('../components/TowerScene'));
 
 function Hero() {
     const { loaded } = useSiteMotion();
@@ -32,7 +34,9 @@ function Hero() {
     return (
         <section className="hero" ref={section}>
             <div className="hero-stage" ref={stage}>
-                <TowerScene progress={progress} start={loaded} />
+                <Suspense fallback={<div className="tower-scene" aria-hidden="true" />}>
+                    <TowerScene progress={progress} start={loaded} />
+                </Suspense>
 
                 <div className="hero-top mono">
                     <Scramble text="[ Fig. 01 — Tower study ]" />
@@ -213,7 +217,7 @@ function MaterialLibrary() {
                 />
             )}
             {status === 'loading' && (
-                <div className="library-skeleton" aria-label="Loading materials">
+                <div className="library-skeleton" role="status" aria-label="Loading materials">
                     {[0, 1, 2, 3].map((n) => (
                         <span key={n} />
                     ))}

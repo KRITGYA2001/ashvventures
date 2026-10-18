@@ -76,9 +76,10 @@ function TowerScene({ progress, start }) {
         const small = window.innerWidth < 760;
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, small ? 1.5 : 2));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, small ? 1.25 : 2));
         renderer.setClearColor(0x000000, 0);
-        renderer.shadowMap.enabled = true;
+        // Soft shadows are the costliest pass; phones render without them.
+        renderer.shadowMap.enabled = !small;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         host.appendChild(renderer.domElement);
@@ -164,6 +165,7 @@ function TowerScene({ progress, start }) {
 
         const pointer = { x: 0, y: 0, sx: 0, sy: 0 };
         const onPointer = (e) => {
+            if (reduced) return;
             pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
             pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
         };
@@ -193,12 +195,16 @@ function TowerScene({ progress, start }) {
         let startedAt = null;
         let raf;
         let p = 0;
+        let drawn = false;
 
         const frame = () => {
             raf = requestAnimationFrame(frame);
             if (!visible || document.hidden) return;
             const t = clock.getElapsedTime();
             if (startRef.current && startedAt === null) startedAt = t;
+            // Nothing moves behind the loader, so draw one frame and wait.
+            if (startedAt === null && !reduced && drawn) return;
+            drawn = true;
             const intro = reduced ? 1 : startedAt === null ? 0 : (t - startedAt) / 2.6;
 
             // Ease scroll progress so it settles like the smooth scroll does.

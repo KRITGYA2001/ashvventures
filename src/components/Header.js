@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import TLink from './TLink';
 import { gsap } from '../motion/gsap';
-import { useSiteMotion } from '../motion/SiteMotion';
+import { prefersReducedMotion, useSiteMotion } from '../motion/SiteMotion';
 import { scrambleTo } from '../motion/text';
 import { company, navItems, pad } from '../content';
 
@@ -28,6 +28,7 @@ function Header() {
     const [hidden, setHidden] = useState(false);
     const [onDark, setOnDark] = useState(false);
     const menu = useRef(null);
+    const toggle = useRef(null);
     const { lenis } = useSiteMotion();
     const location = useLocation();
     const time = useDelhiTime();
@@ -54,10 +55,18 @@ function Header() {
         if (!el) return;
         const links = el.querySelectorAll('.menu-link-inner');
         const meta = el.querySelectorAll('.menu-meta > *');
+        if (prefersReducedMotion()) {
+            if (open) lenis.current?.stop();
+            else lenis.current?.start();
+            gsap.set(el, { display: open ? 'flex' : 'none', clipPath: 'none' });
+            gsap.set([...links, ...meta], { clearProps: 'all' });
+            return;
+        }
         if (open) {
             lenis.current?.stop();
+            // Shown synchronously so the focus effect below can reach the links.
+            gsap.set(el, { display: 'flex' });
             gsap.timeline()
-                .set(el, { display: 'flex' })
                 .fromTo(el, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.8, ease: 'expo.inOut' })
                 .fromTo(links, { y: 0, yPercent: 110 }, { y: 0, yPercent: 0, duration: 0.9, ease: 'expo.out', stagger: 0.06 }, '-=0.35')
                 .fromTo(meta, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.05 }, '-=0.6');
@@ -69,17 +78,35 @@ function Header() {
         }
     }, [open, lenis]);
 
+    // While the menu is open, focus moves into it and Tab cycles between the
+    // toggle and the menu links; closing hands focus back to the toggle.
     useEffect(() => {
-        const onKey = (e) => e.key === 'Escape' && setOpen(false);
+        if (!open) return undefined;
+        const el = menu.current;
+        el?.querySelector('a')?.focus({ preventScroll: true });
+
+        const onKey = (e) => {
+            if (e.key === 'Escape') {
+                setOpen(false);
+                toggle.current?.focus();
+                return;
+            }
+            if (e.key !== 'Tab' || !el) return;
+            const stops = [toggle.current, ...el.querySelectorAll('a')];
+            const i = stops.indexOf(document.activeElement);
+            const next = e.shiftKey ? (i <= 0 ? stops.length - 1 : i - 1) : i === stops.length - 1 ? 0 : i + 1;
+            e.preventDefault();
+            stops[next]?.focus();
+        };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-    }, []);
+    }, [open]);
 
     return (
         <>
             <header className={`site-header ${hidden && !open ? 'is-hidden' : ''} ${onDark || open ? 'is-dark' : ''}`}>
                 <TLink to="/" label="Home" className="brand" aria-label="Ashv Ventures home">
-                    <img src="/images/logo/logo-mark.png" alt="" />
+                    <img src="/images/logo/logo-mark-160.png" alt="" />
                     <span className="brand-word">ASHV</span>
                     <span className="brand-sub mono">Ventures</span>
                 </TLink>
@@ -94,6 +121,7 @@ function Header() {
                         Start a project
                     </TLink>
                     <button
+                        ref={toggle}
                         type="button"
                         className={`menu-toggle ${open ? 'is-open' : ''}`}
                         onClick={() => setOpen((v) => !v)}

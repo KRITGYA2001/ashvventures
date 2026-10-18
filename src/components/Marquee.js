@@ -13,6 +13,12 @@ function Marquee({ items, className = '', speed = 60 }) {
         let boost = 0;
         let dir = -1;
         const half = () => el.scrollWidth / 2;
+        // Only animate while the strip is on screen.
+        let visible = false;
+        const io = new IntersectionObserver(([entry]) => {
+            visible = entry.isIntersecting;
+        });
+        io.observe(el);
 
         const trigger = ScrollTrigger.create({
             trigger: el,
@@ -25,6 +31,7 @@ function Marquee({ items, className = '', speed = 60 }) {
         });
 
         const tick = (_, delta) => {
+            if (!visible) return;
             boost *= 0.94;
             x += dir * (speed + boost * speed) * (delta / 1000);
             const w = half();
@@ -36,6 +43,7 @@ function Marquee({ items, className = '', speed = 60 }) {
 
         return () => {
             gsap.ticker.remove(tick);
+            io.disconnect();
             trigger.kill();
         };
     }, [speed]);

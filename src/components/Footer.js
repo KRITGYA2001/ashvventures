@@ -62,7 +62,7 @@ function Footer() {
 
             <div className="footer-mark" aria-hidden="true">
                 <span>ASHV</span>
-                <img src="/images/logo/logo-mark.png" alt="" />
+                <img src="/images/logo/logo-mark.png" alt="" loading="lazy" />
             </div>
 
             <div className="footer-base mono">

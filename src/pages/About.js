@@ -19,7 +19,7 @@ function About() {
                     <Reveal as="h1" className="page-title" text={'One standard\nacross design,\nbuild & supply.'} immediate delay={0.1} />
                 )}
                 <figure className="page-hero-media" data-clip>
-                    <img src="/images/slides/about1.jpg" alt="Ashv Ventures architectural site detail" data-speed="0.22" />
+                    <img src="/images/slides/about1.webp" alt="Ashv Ventures architectural site detail" data-speed="0.22" />
                 </figure>
             </section>
 
@@ -51,10 +51,10 @@ function About() {
                     <Reveal as="h2" className="h-l" text={vision} stagger={0.02} />
                 </article>
                 <figure className="vm-media" data-clip>
-                    <img src="/images/slides/ashv-interior.png" alt="A finished Ashv Ventures interior" loading="lazy" data-speed="0.2" />
+                    <img src="/images/slides/ashv-interior.webp" alt="A finished Ashv Ventures interior" loading="lazy" data-speed="0.2" />
                 </figure>
                 <figure className="vm-media" data-clip>
-                    <img src="/images/slides/about2.jpg" alt="Completed Ashv Ventures work" loading="lazy" data-speed="0.2" />
+                    <img src="/images/slides/about2.webp" alt="Completed Ashv Ventures work" loading="lazy" data-speed="0.2" />
                 </figure>
                 <article className="vm-item">
                     <span className="mono">[ Mission ]</span>

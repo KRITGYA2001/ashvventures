@@ -1,138 +1,157 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
+import { useSiteMotion } from '../motion/SiteMotion';
+import { Reveal, Scramble, usePageMotion } from '../motion/text';
+import { company } from '../content';
 
-const contactChannels = [
-    {
-        label: 'Email',
-        value: 'contact@ashvventures.com',
-        href: 'mailto:contact@ashvventures.com',
-        note: 'Best for project briefs, site details, and early discussions.',
-    },
-    {
-        label: 'Call',
-        value: '+91 8700832180',
-        href: 'tel:+918700832180',
-        note: 'Best for direct coordination and immediate project conversations.',
-    },
-    {
-        label: 'WhatsApp',
-        value: 'Start a chat',
-        href: 'https://wa.me/918700832180',
-        note: 'Best for quick questions, image sharing, and follow-ups.',
-    },
+const channels = [
+    { label: 'Email', value: company.email, href: `mailto:${company.email}`, note: 'Project briefs, drawings, site details' },
+    { label: 'Call', value: company.phone, href: company.phoneHref, note: 'Direct coordination' },
+    { label: 'WhatsApp', value: 'Start a chat', href: `https://wa.me/${company.whatsapp}`, note: 'Quick questions and photos' },
 ];
 
-const prepNotes = [
-    'Project type and location',
-    'Expected timeline or urgency',
-    'Any drawings, references, or material direction',
-];
+const projectTypes = ['Residential', 'Commercial', 'Interiors', 'Material supply'];
+const scopes = ['Design', 'Construction', 'Materials'];
 
-function Contact() {
-    useEffect(() => {
-        const items = document.querySelectorAll('[data-reveal]');
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
-        );
+// Composes a brief and hands it to the visitor's own email or WhatsApp,
+// so nothing is stored or sent by the site itself.
+function BriefBuilder() {
+    const [type, setType] = useState('Residential');
+    const [scope, setScope] = useState(['Design', 'Construction']);
+    const [form, setForm] = useState({ name: '', location: '', timeline: '', message: '' });
 
-        items.forEach((item) => observer.observe(item));
-        return () => observer.disconnect();
-    }, []);
+    const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+    const toggleScope = (item) => setScope((s) => (s.includes(item) ? s.filter((x) => x !== item) : [...s, item]));
+
+    const body = [
+        `Hello Ashv Ventures,`,
+        ``,
+        `Project type: ${type}`,
+        `Scope: ${scope.join(', ') || '—'}`,
+        form.location ? `Location: ${form.location}` : null,
+        form.timeline ? `Timeline: ${form.timeline}` : null,
+        ``,
+        form.message || null,
+        form.name ? `\n— ${form.name}` : null,
+    ]
+        .filter((line) => line !== null)
+        .join('\n');
+
+    const subject = `Project brief — ${type}${form.location ? `, ${form.location}` : ''}`;
+    const mailto = `mailto:${company.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const whatsapp = `https://wa.me/${company.whatsapp}?text=${encodeURIComponent(body)}`;
 
     return (
-        <div className="contact-page contact-v3">
-            <section className="inner-hero inner-hero-contact">
-                <div className="inner-hero-backdrop" aria-hidden="true" />
-                <div className="container inner-hero-layout">
-                    <div className="inner-hero-copy" data-reveal>
-                        <p className="section-eyebrow section-eyebrow-light">Contact</p>
-                        <h1>Let&apos;s discuss your project with clarity from the first step.</h1>
-                        <p className="inner-hero-summary">
-                            Share your scope, location, and timing. We will help identify the most practical next move.
-                        </p>
-                    </div>
-
-                    <div className="inner-hero-meta" data-reveal>
-                        <span>Direct access</span>
-                        <strong>Reach the team through email, call, or WhatsApp.</strong>
-                    </div>
+        <form className="brief" onSubmit={(e) => e.preventDefault()} data-fade>
+            <fieldset>
+                <legend className="mono">01 — Project type</legend>
+                <div className="chips">
+                    {projectTypes.map((item) => (
+                        <button type="button" key={item} className={`chip ${type === item ? 'is-on' : ''}`} onClick={() => setType(item)} aria-pressed={type === item}>
+                            {item}
+                        </button>
+                    ))}
                 </div>
+            </fieldset>
+            <fieldset>
+                <legend className="mono">02 — Scope</legend>
+                <div className="chips">
+                    {scopes.map((item) => (
+                        <button
+                            type="button"
+                            key={item}
+                            className={`chip ${scope.includes(item) ? 'is-on' : ''}`}
+                            onClick={() => toggleScope(item)}
+                            aria-pressed={scope.includes(item)}
+                        >
+                            {item}
+                        </button>
+                    ))}
+                </div>
+            </fieldset>
+            <fieldset className="brief-fields">
+                <legend className="mono">03 — Details</legend>
+                <label>
+                    <span className="mono">Your name</span>
+                    <input value={form.name} onChange={update('name')} autoComplete="name" />
+                </label>
+                <label>
+                    <span className="mono">Site location</span>
+                    <input value={form.location} onChange={update('location')} placeholder="e.g. Vasant Vihar, New Delhi" />
+                </label>
+                <label>
+                    <span className="mono">Timeline</span>
+                    <input value={form.timeline} onChange={update('timeline')} placeholder="e.g. Start in 3 months" />
+                </label>
+                <label className="brief-wide">
+                    <span className="mono">About the project</span>
+                    <textarea rows={4} value={form.message} onChange={update('message')} placeholder="Size, references, drawings you already have…" />
+                </label>
+            </fieldset>
+            <div className="brief-send">
+                <p className="mono">Opens in your own email or WhatsApp — nothing is stored here.</p>
+                <div className="brief-buttons">
+                    <a className="pill pill-solid" href={mailto}>
+                        Send by email
+                    </a>
+                    <a className="pill" href={whatsapp} target="_blank" rel="noopener noreferrer">
+                        Send on WhatsApp
+                    </a>
+                </div>
+            </div>
+        </form>
+    );
+}
+
+function Contact() {
+    const { loaded } = useSiteMotion();
+    usePageMotion();
+
+    return (
+        <div className="page page-contact">
+            <section className="page-hero page-hero-tight">
+                <div className="page-hero-top mono">
+                    <Scramble text="[ Contact ]" />
+                    <Scramble text={company.hours} delay={0.15} />
+                </div>
+                {loaded && <Reveal as="h1" className="page-title" text={"Let's build\nsomething\nresolved."} immediate delay={0.1} />}
             </section>
 
-            <section className="contact-v3-main">
-                <div className="container contact-v3-grid">
-                    <article className="contact-v3-intro premium-panel" data-reveal>
-                        <p className="section-eyebrow">Start here</p>
-                        <h2>Bring the brief. We&apos;ll help shape the next step.</h2>
-                        <p>
-                            The most useful first message includes the project type, location, expected timeline, and any
-                            references or drawings already available.
-                        </p>
-                        <div className="contact-v3-prep">
-                            {prepNotes.map((note) => (
-                                <div className="contact-v3-prep-item" key={note}>
-                                    <span />
-                                    <p>{note}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </article>
-
-                    <article className="contact-v3-actions" data-reveal>
-                        {contactChannels.map((channel) => (
-                            <a
-                                className="contact-v3-action"
-                                href={channel.href}
-                                key={channel.label}
-                                target={channel.href.startsWith('https') ? '_blank' : undefined}
-                                rel={channel.href.startsWith('https') ? 'noopener noreferrer' : undefined}
-                            >
-                                <span>{channel.label}</span>
-                                <strong>{channel.value}</strong>
-                                <p>{channel.note}</p>
-                            </a>
-                        ))}
-                    </article>
-                </div>
+            <section className="channels">
+                {channels.map((c, i) => (
+                    <a
+                        key={c.label}
+                        className="channel"
+                        href={c.href}
+                        target={c.href.startsWith('https') ? '_blank' : undefined}
+                        rel={c.href.startsWith('https') ? 'noopener noreferrer' : undefined}
+                        data-fade
+                        style={{ '--d': `${i * 90}ms` }}
+                    >
+                        <span className="mono">0{i + 1} — {c.label}</span>
+                        <strong>{c.value}</strong>
+                        <span className="channel-note">{c.note}</span>
+                        <span className="channel-arrow" aria-hidden="true">↗</span>
+                    </a>
+                ))}
             </section>
 
-            <section className="contact-v3-details">
-                <div className="container contact-v3-details-grid">
-                    <article className="contact-v3-card" data-reveal>
-                        <p className="section-eyebrow">Office</p>
-                        <h2>Basant Nagar, New Delhi.</h2>
-                        <p>H. No. 178-B, Ground Floor, Basant Nagar, New Delhi - 110057</p>
-                    </article>
-
-                    <article className="contact-v3-card" data-reveal>
-                        <p className="section-eyebrow">Hours</p>
-                        <h2>Monday to Saturday</h2>
-                        <p>9:00 AM - 6:00 PM</p>
-                    </article>
+            <section className="brief-wrap" data-theme="dark">
+                <div className="brief-intro">
+                    <Scramble as="p" className="eyebrow" text="[ Brief builder ]" />
+                    <Reveal text={'Bring the brief.\nWe’ll shape the\nnext step.'} className="h-xl" />
+                    <p className="body-l">Pick what applies and add a few details — we reply within one working day.</p>
                 </div>
+                <BriefBuilder />
             </section>
 
-            <section className="contact-v3-map">
-                <div className="container">
-                    <div className="contact-v3-map-wrap premium-panel" data-reveal>
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3503.826!2d77.158168!3d28.571209!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m1!2zMjjCsDM0JzE2LjQiTiA3N8KwMDknMjkuNCJF!5e0!3m2!1sen!2sin!4v1709000000000!5m2!1sen!2sin"
-                            width="100%"
-                            height="430"
-                            style={{ border: 0 }}
-                            allowFullScreen=""
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                            title="Ashv Ventures Location Map"
-                        />
-                    </div>
+            <section className="office">
+                <div className="office-copy">
+                    <Scramble as="p" className="eyebrow" text="[ Visit ]" />
+                    <h2 className="h-l">{company.address.join(', ')}</h2>
+                    <p className="mono">{company.coords}</p>
+                </div>
+                <div className="map-frame" data-fade>
+                    <iframe src={company.mapSrc} title="Ashv Ventures office map" loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
                 </div>
             </section>
         </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -9,10 +9,12 @@ import About from './pages/About';
 import Materials from './pages/Materials';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
-import Brochure from './pages/Brochure';
 import ScrollToTop from './components/ScrollToTop';
 import { SiteMotionProvider } from './motion/SiteMotion';
 import './App.css';
+
+// The brochure is a standalone print page, so it loads only when visited.
+const Brochure = lazy(() => import('./pages/Brochure'));
 
 function SiteLayout() {
     return (
@@ -42,7 +44,14 @@ function App() {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
-                <Route path="/brochure" element={<Brochure />} />
+                <Route
+                    path="/brochure"
+                    element={
+                        <Suspense fallback={null}>
+                            <Brochure />
+                        </Suspense>
+                    }
+                />
             </Routes>
         </Router>
     );

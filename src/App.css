@@ -12,6 +12,8 @@
   --concrete: #8e8a83;
   --clay: #c4552b;
   --clay-2: #a8431f;
+  /* Clay for small text: darkened on light grounds, lifted on dark ones, to clear 4.5:1. */
+  --accent: #9e3f1d;
   --line: rgba(17, 17, 16, 0.14);
   --line-light: rgba(236, 232, 225, 0.16);
 
@@ -82,7 +84,7 @@ button {
   font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--clay);
+  color: var(--accent);
   margin-bottom: 28px;
 }
 
@@ -520,7 +522,7 @@ button {
 }
 
 .menu-index {
-  color: var(--clay);
+  color: var(--accent);
   width: 28px;
 }
 
@@ -571,8 +573,22 @@ button {
 }
 
 [data-theme='dark'] {
+  --accent: #e07446;
   background: var(--ink);
   color: var(--bone);
+}
+
+/* Visible to screen readers only; carries the real text behind animated copies. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ---------- Hero ---------- */
@@ -687,7 +703,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .hero-callouts li span {
-  color: var(--clay);
+  color: var(--accent);
 }
 
 .hero-scroll {
@@ -803,7 +819,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .disc-num {
-  color: var(--clay);
+  color: var(--accent);
 }
 
 .disc-title {
@@ -1153,7 +1169,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .principle .mono {
-  color: var(--clay);
+  color: var(--accent);
 }
 
 .principle h3 {
@@ -1416,7 +1432,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .vm-item .mono {
-  color: var(--clay);
+  color: var(--accent);
 }
 
 .vm-media {
@@ -1470,7 +1486,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .hover-row .mono {
-  color: var(--clay);
+  color: var(--accent);
 }
 
 .hover-row img {
@@ -1526,7 +1542,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .value-card .mono {
-  color: var(--clay);
+  color: var(--accent);
 }
 
 .value-card h3 {
@@ -1610,7 +1626,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .mat-index {
-  color: var(--clay);
+  color: var(--accent);
 }
 
 .mat-head h2 {
@@ -1684,7 +1700,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .mat-brochure .mono {
-  color: var(--clay);
+  color: var(--accent);
 }
 
 .mat-brochure .h-l {
@@ -1799,7 +1815,7 @@ html:not(.is-loading) .fade-after-load {
 }
 
 .brief legend {
-  color: var(--clay);
+  color: var(--accent);
   margin-bottom: 14px;
 }
 

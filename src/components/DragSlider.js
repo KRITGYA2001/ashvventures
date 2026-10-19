@@ -41,6 +41,12 @@ function DragSlider({ items, renderItem, getKey, label = 'Slider' }) {
         let total = 0;
         let lastIndex = -1;
         let wheelTimer;
+        let visible = false;
+        let settled = false;
+        const io = new IntersectionObserver(([entry]) => {
+            visible = entry.isIntersecting;
+        });
+        io.observe(vp);
 
         const measure = () => {
             const first = slideEls.current[0];
@@ -49,17 +55,22 @@ function DragSlider({ items, renderItem, getKey, label = 'Slider' }) {
             s.step = first.offsetWidth + gap;
             total = s.step * slides.length;
             snap();
+            settled = false;
         };
         measure();
         const ro = new ResizeObserver(measure);
         ro.observe(vp);
 
         const tick = () => {
+            // Skip the per-slide writes when off screen or once the slider has come to rest.
+            const resting = !s.dragging && Math.abs(s.target - s.current) < 0.05;
+            if (!visible || (resting && settled)) return;
+            settled = resting;
             const prev = s.current;
             s.current += (s.target - s.current) * (reduced ? 1 : 0.085);
             const velocity = s.current - prev;
             const vw = vp.offsetWidth;
-            const skew = clamp(velocity * 0.18, -7, 7);
+            const skew = reduced ? 0 : clamp(velocity * 0.18, -7, 7);
 
             slideEls.current.forEach((el, i) => {
                 if (!el) return;
@@ -139,6 +150,7 @@ function DragSlider({ items, renderItem, getKey, label = 'Slider' }) {
         return () => {
             gsap.ticker.remove(tick);
             ro.disconnect();
+            io.disconnect();
             window.clearTimeout(wheelTimer);
             vp.removeEventListener('pointerdown', down);
             vp.removeEventListener('pointermove', move);
@@ -157,7 +169,15 @@ function DragSlider({ items, renderItem, getKey, label = 'Slider' }) {
 
     return (
         <div className="slider" role="region" aria-roledescription="carousel" aria-label={label}>
-            <div className="slider-viewport" ref={viewport} data-cursor="Drag" tabIndex={0} onKeyDown={onKey}>
+            <div
+                className="slider-viewport"
+                ref={viewport}
+                data-cursor="Drag"
+                tabIndex={0}
+                onKeyDown={onKey}
+                role="group"
+                aria-label={`${label}: use the left and right arrow keys to browse`}
+            >
                 {slides.map(({ item, i, c }, k) => (
                     <div
                         className={`slider-slide ${i === active ? 'is-active' : ''}`}
@@ -172,7 +192,7 @@ function DragSlider({ items, renderItem, getKey, label = 'Slider' }) {
                 ))}
             </div>
             <div className="slider-ui">
-                <span className="mono slider-count">
+                <span className="mono slider-count" aria-live="polite">
                     {pad(active + 1)} <i>/</i> {pad(count)}
                 </span>
                 <div className="slider-bar" aria-hidden="true">
